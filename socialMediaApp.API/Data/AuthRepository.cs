@@ -15,6 +15,7 @@ namespace datingApp.API.Data
     }
     public async Task<User> Login(string username, string password)
     {
+      //firstOrDefaul returns null in case it doesnt find value
       var user = await _context.Users.FirstOrDefaultAsync(x => x.Username == username);
       if (user == null)
         return null;
@@ -26,6 +27,7 @@ namespace datingApp.API.Data
 
     private bool VerifyPasswordHash(string password, byte[] passwordHash, byte[] passwordSalt)
     {
+// adding Salt so that it can be compared with the sored password
       using (var hmac = new System.Security.Cryptography.HMACSHA512(passwordSalt))
       {
 
@@ -41,6 +43,7 @@ namespace datingApp.API.Data
 
     public async Task<User> Register(User user, string password)
     {
+      //defining variables of typee byte arrays
       byte[] passwordHash, passwordSalt;
 
       CreatePasswordHash(password, out passwordHash, out passwordSalt);
@@ -53,6 +56,8 @@ namespace datingApp.API.Data
 
     private void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
     {
+      //creating instance and "using " is used to use to enable dispose method
+      //we need to dispose everything inside curly braces after using
       using (var hmac = new System.Security.Cryptography.HMACSHA512())
       {
         passwordSalt = hmac.Key;
